@@ -36,7 +36,9 @@ Các lựa chọn của người dùng vẫn giữ nguyên trên form sau khi su
 🔹 Kết quả dự đoán
 
 <img width="880" height="611" alt="image" src="https://github.com/user-attachments/assets/594ce291-5f9d-4b3f-9768-ec2fc6c149b7" />
+
 ## 🚀 Khởi chạy ứng dụng
+
 ```bash
 1. Tạo môi trường ảo
 python -m venv .venv
