@@ -23,7 +23,7 @@ e → Nấm ăn được (Edible)
 
 p → Nấm độc (Poisonous)
 
-Trường hợp không xác định → cảnh báo UNKNOWN
+Trường hợp không xác định → ⚠️ Không xác định được
 
 Các lựa chọn của người dùng vẫn giữ nguyên trên form sau khi submit.
 
