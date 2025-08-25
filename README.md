@@ -56,6 +56,7 @@ python app.py
 5. Mở trình duyệt
 http://127.0.0.1:5000
 ```
+
 ## 💡 Ghi chú
 
 Mô hình đã được huấn luyện trên 3 feature quan trọng: odor, cap-color, gill-color.
