@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Mushroom Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --accent: #6366f1;
+      --ok: #10b981;
+      --bad: #ef4444;
+      --warn: #f59e0b;
+      --ring: rgba(99, 102, 241, 0.4);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at top right, #1f2937 0%, var(--bg) 50%);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+    .card {
+      width: min(680px, 92vw);
+      background: linear-gradient(180deg, #111827, #0b1220);
+      border: 1px solid #1f2937;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow:
+        0 40px 80px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    h1 {
+      margin: 0 0 16px 0;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    p.sub {
+      margin: 0 0 24px 0;
+      color: var(--muted);
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .field { display: grid; gap: 8px; }
+    label { font-weight: 600; font-size: 14px; color: #cbd5e1; }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #263245;
+      background: #0a1220;
+      color: var(--text);
+      outline: none;
+      transition: box-shadow .2s, border-color .2s, transform .02s;
+    }
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 6px var(--ring);
+    }
+    .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    button {
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #4f46e5, #4338ca);
+      color: white;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform .04s ease, filter .2s ease;
+    }
+    button:hover { filter: brightness(1.05); }
+    button:active { transform: translateY(1px); }
+    .result {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      background: #0b1220;
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700;
+    }
+    .chip {
+      font-size: 12px; font-weight: 800; letter-spacing: .3px;
+      padding: 6px 10px; border-radius: 999px; color: white;
+    }
+    .chip.ok { background: linear-gradient(180deg, #10b981, #059669); }
+    .chip.bad { background: linear-gradient(180deg, #ef4444, #dc2626); }
+    .chip.warn { background: linear-gradient(180deg, #f59e0b, #d97706); }
+    footer {
+      margin-top: 18px; color: var(--muted); font-size: 12px;
+    }
+    .full { grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🍄 Mushroom Prediction</h1>
+    <p class="sub">Dự đoán nấm <b>ăn được</b> hay <b>độc</b> bằng mô hình ID3 (3 thuộc tính quan trọng).</p>
+
+    <form method="post">
+      <div class="field">
+        <label for="odor">Mùi (odor)</label>
+        <select id="odor" name="odor" required>
+          <option value="" selected disabled>— Chọn mùi —</option>
+          {% for code, label in odor_values.items() %}
+            <option value="{{ code }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="cap_color">Màu mũ nấm (cap-color)</label>
+        <select id="cap_color" name="cap_color" required>
+          <option value="" selected disabled>— Chọn màu mũ —</option>
+          {% for code, label in cap_color_values.items() %}
+            <option value="{{ code }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field full">
+        <label for="gill_color">Màu phiến nấm (gill-color)</label>
+        <select id="gill_color" name="gill_color" required>
+          <option value="" selected disabled>— Chọn màu phiến —</option>
+          {% for code, label in gill_color_values.items() %}
+            <option value="{{ code }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="submit">🔮 Dự đoán</button>
+      </div>
+    </form>
+
+    {% if result %}
+      <div class="result">
+        {% if pred_code == "e" %}
+          <span class="chip ok">EDIBLE</span>
+        {% elif pred_code == "p" %}
+          <span class="chip bad">POISONOUS</span>
+        {% else %}
+          <span class="chip warn">UNKNOWN</span>
+        {% endif %}
+        <span>{{ result }}</span>
+      </div>
+    {% endif %}
+
+    <footer>
+      Model: ID3 • Features: odor, cap-color, gill-color
+    </footer>
+  </div>
+</body>
+</html>
