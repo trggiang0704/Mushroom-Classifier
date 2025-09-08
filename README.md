@@ -9,7 +9,7 @@ Thành phần	Công nghệ sử dụng
 Ngôn ngữ lập trình	Python 3
 Web framework	Flask
 Machine Learning	ID3 (Decision Tree)
-Frontend	HTML, CSS (thuần)
+Frontend	HTML, CSS
 Template engine	Jinja2 (tích hợp Flask)
 ## 🧠 Logic & hoạt động
 
